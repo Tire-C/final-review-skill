@@ -11,6 +11,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Expanded the README into a full product page: badges, table of contents, flow diagram, at-a-glance table, report contract, use cases, compatibility matrix, FAQ.
 
+### Fixed
+
+- Executable bit set on `install.sh` and `scripts/validate.sh`, so `./install.sh` works out of the box on a fresh Unix clone.
+
 ## [1.0.0] - 2026-07-07
 
 ### Added
