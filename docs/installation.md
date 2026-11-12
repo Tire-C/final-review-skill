@@ -10,14 +10,14 @@ Available in every project on your machine.
 # macOS / Linux
 ./install.sh
 # or manually:
-cp -R skills/final-review ~/.claude/skills/final-review
+mkdir -p ~/.claude/skills/final-review && cp -R skills/final-review/. ~/.claude/skills/final-review/
 ```
 
 ```powershell
 # Windows
 .\install.ps1
 # or manually:
-Copy-Item -Recurse skills\final-review "$HOME\.claude\skills\final-review"
+New-Item -ItemType Directory -Force "$HOME\.claude\skills\final-review" | Out-Null; Copy-Item -Recurse -Force skills\final-review\* "$HOME\.claude\skills\final-review"
 ```
 
 ## 2. Claude Code — project skill
@@ -25,14 +25,17 @@ Copy-Item -Recurse skills\final-review "$HOME\.claude\skills\final-review"
 Available only inside one project, and shared with collaborators if committed to the project's repository.
 
 ```sh
-# from this repository's root, targeting the current directory's project:
+# targeting the current directory's project:
 ./install.sh project
 # or manually, from your project root:
-cp -R <path-to-this-repo>/skills/final-review .claude/skills/final-review
+mkdir -p .claude/skills/final-review && cp -R <path-to-this-repo>/skills/final-review/. .claude/skills/final-review/
 ```
 
 ```powershell
+# targeting the current directory's project:
 .\install.ps1 -Target project
+# or manually, from your project root:
+New-Item -ItemType Directory -Force .claude\skills\final-review | Out-Null; Copy-Item -Recurse -Force <path-to-this-repo>\skills\final-review\* .claude\skills\final-review
 ```
 
 ## 3. Other Agent Skills-compatible clients

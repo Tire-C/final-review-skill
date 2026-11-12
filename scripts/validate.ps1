@@ -2,7 +2,8 @@
 # Validates the repository structure and the Final Review skill definition.
 # Usage: pwsh -File scripts/validate.ps1   (or powershell -File scripts/validate.ps1)
 $ErrorActionPreference = 'Stop'
-Set-Location (Split-Path -Parent $PSScriptRoot)
+Push-Location (Split-Path -Parent $PSScriptRoot)
+try {
 
 $script:Errors = 0
 function Fail([string]$Message) { Write-Host "FAIL: $Message"; $script:Errors++ }
@@ -23,10 +24,10 @@ Write-Host "== SKILL.md frontmatter =="
 $skillPath = 'skills/final-review/SKILL.md'
 if (Test-Path $skillPath) {
     $lines = @(Get-Content $skillPath)
-    if ($lines[0] -eq '---') { Ok "frontmatter delimiter present" }
+    if ($lines.Count -gt 0 -and $lines[0] -eq '---') { Ok "frontmatter delimiter present" }
     else { Fail "SKILL.md must start with '---' YAML frontmatter" }
 
-    $fmEnd = [Array]::IndexOf($lines, '---', 1)
+    $fmEnd = if ($lines.Count -gt 1) { [Array]::IndexOf($lines, '---', 1) } else { -1 }
     if ($fmEnd -lt 1) {
         Fail "frontmatter is not closed with '---'"
     }
@@ -50,7 +51,7 @@ if (Test-Path $skillPath) {
 Write-Host ""
 Write-Host "== Secret scan =="
 $secretPattern = 'ghp_[A-Za-z0-9]{20,}|gho_[A-Za-z0-9]{20,}|ghu_[A-Za-z0-9]{20,}|github_pat_[A-Za-z0-9_]{20,}|sk-[A-Za-z0-9]{20,}|AKIA[0-9A-Z]{16}|BEGIN[A-Z ]*PRIVATE KEY'
-$hits = Get-ChildItem -Recurse -File |
+$hits = Get-ChildItem -Recurse -File -Force |
     Where-Object { $_.FullName -notmatch '[\\/]\.git[\\/]' } |
     Select-String -Pattern $secretPattern -AllMatches -ErrorAction SilentlyContinue
 if ($hits) {
@@ -64,7 +65,7 @@ else {
 Write-Host ""
 Write-Host "== Relative markdown links =="
 $broken = @()
-Get-ChildItem -Recurse -Filter *.md -File |
+Get-ChildItem -Recurse -Filter *.md -File -Force |
     Where-Object { $_.FullName -notmatch '[\\/]\.git[\\/]' } |
     ForEach-Object {
         $mdFile = $_
@@ -83,6 +84,11 @@ if ($broken.Count -gt 0) {
 }
 else {
     Ok "all relative markdown links resolve"
+}
+
+}
+finally {
+    Pop-Location
 }
 
 Write-Host ""

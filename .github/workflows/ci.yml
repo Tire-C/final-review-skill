@@ -5,13 +5,19 @@ on:
     branches: [main]
   pull_request:
 
+permissions:
+  contents: read
+
 jobs:
   validate:
     name: Validate skill and repository structure
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
-      - name: Run validation
+      - name: Run validation (bash)
         run: bash scripts/validate.sh
+
+      - name: Run validation (PowerShell)
+        run: pwsh -NoProfile -File scripts/validate.ps1

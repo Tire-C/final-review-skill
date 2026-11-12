@@ -18,6 +18,7 @@ Custom destination directory (overrides -Target). Use for other Agent Skills cli
 .\install.ps1 -Target project
 .\install.ps1 -Path C:\my\agent\skills\final-review
 #>
+[CmdletBinding(PositionalBinding = $false)]
 param(
     [ValidateSet('personal', 'project')]
     [string]$Target = 'personal',
@@ -27,7 +28,7 @@ param(
 $ErrorActionPreference = 'Stop'
 
 $source = Join-Path $PSScriptRoot 'skills\final-review'
-if (-not (Test-Path (Join-Path $source 'SKILL.md'))) {
+if (-not (Test-Path (Join-Path $source 'SKILL.md') -PathType Leaf)) {
     Write-Error "Source skill not found at '$source'. Run this script from the repository root."
 }
 

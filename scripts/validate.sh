@@ -20,25 +20,29 @@ echo
 echo "== SKILL.md frontmatter =="
 SKILL="skills/final-review/SKILL.md"
 if [ -f "$SKILL" ]; then
-  if [ "$(head -n 1 "$SKILL")" = "---" ]; then
+  if [ "$(head -n 1 "$SKILL" | tr -d '\r')" = "---" ]; then
     ok "frontmatter delimiter present"
   else
     fail "SKILL.md must start with '---' YAML frontmatter"
   fi
-  FM=$(awk 'NR==1 && /^---$/ {infm=1; next} infm && /^---$/ {exit} infm {print}' "$SKILL")
-  if printf '%s\n' "$FM" | grep -q '^name: final-review$'; then
-    ok "name: final-review"
+  if ! tr -d '\r' < "$SKILL" | awk 'NR==1 && /^---$/ {infm=1; next} infm && /^---$/ {closed=1; exit} END {exit !closed}'; then
+    fail "frontmatter is not closed with '---'"
   else
-    fail "frontmatter must declare 'name: final-review'"
-  fi
-  DESC=$(printf '%s\n' "$FM" | sed -n 's/^description:[[:space:]]*//p')
-  if [ -n "$DESC" ]; then
-    ok "description present (${#DESC} chars)"
-    if [ "${#DESC}" -gt 1024 ]; then
-      fail "description exceeds 1024 characters"
+    FM=$(tr -d '\r' < "$SKILL" | awk 'NR==1 && /^---$/ {infm=1; next} infm && /^---$/ {exit} infm {print}')
+    if printf '%s\n' "$FM" | grep -q '^name: final-review$'; then
+      ok "name: final-review"
+    else
+      fail "frontmatter must declare 'name: final-review'"
     fi
-  else
-    fail "frontmatter must declare a non-empty single-line 'description'"
+    DESC=$(printf '%s\n' "$FM" | sed -n 's/^description:[[:space:]]*//p')
+    if [ -n "$DESC" ]; then
+      ok "description present (${#DESC} chars)"
+      if [ "${#DESC}" -gt 1024 ]; then
+        fail "description exceeds 1024 characters"
+      fi
+    else
+      fail "frontmatter must declare a non-empty single-line 'description'"
+    fi
   fi
 fi
 
