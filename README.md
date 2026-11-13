@@ -9,7 +9,7 @@ A strict, final-gate review skill for AI agents — one fixed procedure, one fix
 [![CI](https://github.com/Tire-C/final-review-skill/actions/workflows/ci.yml/badge.svg)](https://github.com/Tire-C/final-review-skill/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![Agent Skills](https://img.shields.io/badge/Agent%20Skills-compatible-blue)](skills/final-review/SKILL.md)
-[![Version](https://img.shields.io/badge/version-1.0.1-informational)](CHANGELOG.md)
+[![Version](https://img.shields.io/badge/version-1.0.2-informational)](CHANGELOG.md)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
 
 `PASS` &nbsp;·&nbsp; `PASS WITH RISKS` &nbsp;·&nbsp; `FAIL`
@@ -225,7 +225,7 @@ final-review-skill/
 │   ├── usage.md                   # invocation, scoping, acting on verdicts
 │   ├── customization.md           # what to adapt, what to keep stable
 │   └── philosophy.md              # five operating principles
-├── .github/workflows/ci.yml      # runs scripts/validate.sh on every push/PR
+├── .github/workflows/ci.yml      # runs validate.sh and validate.ps1 on every push/PR
 ├── CHANGELOG.md · CONTRIBUTING.md · CODE_OF_CONDUCT.md · SECURITY.md · LICENSE
 └── README.md                      # you are here
 ```
@@ -248,7 +248,7 @@ Full guidance: [docs/customization.md](docs/customization.md) · Design rational
 
 ## Validation & CI
 
-Every push and pull request runs [`scripts/validate.sh`](scripts/validate.sh), which checks:
+Every push and pull request runs [`scripts/validate.sh`](scripts/validate.sh) and [`scripts/validate.ps1`](scripts/validate.ps1), which check:
 
 - all required files are present,
 - `SKILL.md` has well-formed frontmatter (`name: final-review`, non-empty `description` ≤ 1024 chars),
